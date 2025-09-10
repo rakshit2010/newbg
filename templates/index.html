@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI Background Remover</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+      font-family: 'Montserrat', sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .container {
+      background: #fff;
+      padding: 2.5em 2em 2em 2em;
+      border-radius: 18px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.08), 0 0px 2px rgba(0,0,0,0.03);
+      max-width: 380px;
+      width: 100%;
+      text-align: center;
+    }
+    input[type="file"] {
+      display: none;
+    }
+
+    h1 {
+      color: #229977;
+      margin-bottom: 0.5em;
+    }
+    .input-file input[type="file"] {
+      display: none;
+    }
+    .custom-file-label {
+      display: inline-block;
+      background: #229977;
+      color: #fff;
+      padding: 0.7em 1.1em;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 1.2em;
+      transition: background 0.2s;
+    }
+    .custom-file-label:hover {
+      background: #157356;
+    }
+    .btn {
+      padding: 0.7em 2em;
+      font-size: 1.02rem;
+      color: #fff;
+      background: #2DC997;
+      border: none;
+      border-radius: 8px;
+      margin: 1em 0;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(45, 201, 151, 0.14);
+    }
+    .btn:hover {
+      background: #229977;
+    }
+    .preview {
+      margin: 16px 0;
+      display: none;
+    }
+    .preview img {
+      max-width: 150px;
+      border-radius: 12px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.11);
+    }
+    .note {
+      color: #888;
+      font-size: 0.93em;
+      margin-top: 1em;
+    }
+    .result-image {
+      margin-top: 1.6em;
+      max-width: 210px;
+      border-radius: 14px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.16);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>AI Background Remover</h1>
+    <form action="/" method="post" enctype="multipart/form-data" id="uploadForm">
+      <label class="custom-file-label">
+        Choose Image
+        <input type="file" name="image" accept="image/*" required onchange="previewImage(event)" />
+      </label>
+      <div class="preview" id="previewBox">
+        <img id="previewImg" src="#" alt="Image Preview" />
+      </div>
+      <button type="submit" class="btn">Remove Background</button>
+    </form>
+
+    {% if result_image %}
+    <div>
+      <h3>Background Removed:</h3>
+      <img src="{{ url_for('static', filename='results/' ~ result_image) }}" alt="Result Image" class="result-image" />
+      <div style="margin-top: 0.7em;">
+        <a href="{{ url_for('static', filename='results/' ~ result_image) }}" class="btn" download>Download Result</a>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="note">PNG/JPG up to 10MB.</div>
+  </div>
+
+  <script>
+    function previewImage(event) {
+      var reader = new FileReader();
+      reader.onload = function () {
+        var output = document.getElementById('previewImg');
+        output.src = reader.result;
+        document.getElementById('previewBox').style.display = 'block';
+      };
+      reader.readAsDataURL(event.target.files[0]);
+    }
+  </script>
+</body>
+</html>
